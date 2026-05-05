@@ -3,9 +3,11 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 import os
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 TOKEN = os.environ["8650505079:AAHMdh7Nd-M_KuFbTRXvHqPVPu_pTzjyUN8"]
 
-ALLOWED_GROUP_IDS = [-1005270728036, -1002769452421, -1003434455784]
+ALLOWED_GROUP_IDS = [-1002769452421, -1003434455784]
 
 
 async def send_reminder(context: ContextTypes.DEFAULT_TYPE):
@@ -92,13 +94,22 @@ async def remind(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.effective_message.reply_text("Bot is running ✅")
 
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is running")
 
+def run_web_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), Handler)
+    server.serve_forever()
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("remind", remind))
     app.add_handler(CommandHandler("ping", ping))
-
+    threading.Thread(target=run_web_server, daemon=True).start()
     app.run_polling()
 
 
