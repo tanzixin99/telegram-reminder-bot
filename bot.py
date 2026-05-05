@@ -1,6 +1,7 @@
 import os
 import threading
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from telegram import Update
@@ -74,8 +75,9 @@ async def remind(update: Update, context: ContextTypes.DEFAULT_TYPE):
         hour = int(time_text[:2])
         minute = int(time_text[2:])
 
-        now = datetime.now()
-        target_time = datetime(now.year, month, day, hour, minute)
+        SGT = ZoneInfo("Asia/Singapore")
+        now = datetime.now(SGT)
+        target_time = datetime(now.year, month, day, hour, minute, tzinfo=SGT)
 
         if target_time <= now:
             target_time = datetime(now.year + 1, month, day, hour, minute)
