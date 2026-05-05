@@ -5,7 +5,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import os
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
-TOKEN = os.environ["8650505079:AAHMdh7Nd-M_KuFbTRXvHqPVPu_pTzjyUN8"]
+TOKEN = os.environ["BOT_TOKEN"]
 
 ALLOWED_GROUP_IDS = [-1002769452421, -1003434455784]
 
